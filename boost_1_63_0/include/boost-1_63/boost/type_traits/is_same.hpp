@@ -26,8 +26,8 @@
 namespace boost {
 
 
-   template <class T, class U> struct is_same : public false_type {};
-   template <class T> struct is_same<T,T> : public true_type {};
+   template <class T, class U> struct is_same : public boost::false_type {};
+   template <class T> struct is_same<T,T> : public boost::true_type {};
 #if BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 // without this, Borland's compiler gives the wrong answer for
 // references to arrays:

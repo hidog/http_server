@@ -34,10 +34,10 @@ namespace boost {
 #else
 
    template <class T>
-   struct is_const : public false_type {};
-   template <class T> struct is_const<T const> : public true_type{};
-   template <class T, std::size_t N> struct is_const<T const[N]> : public true_type{};
-   template <class T> struct is_const<T const[]> : public true_type{};
+   struct is_const : public boost::false_type {};
+   template <class T> struct is_const<T const> : public boost::true_type{};
+   template <class T, std::size_t N> struct is_const<T const[N]> : public boost::true_type{};
+   template <class T> struct is_const<T const[]> : public boost::true_type{};
 
 #endif
 

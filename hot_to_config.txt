@@ -1,0 +1,3 @@
+boost_1_63_0_source    boost 1-63-0的官方檔案
+使用github的boost無法成功編譯. (部分submodule已移除)
+無法放原始壓縮檔,檔案太大會被github擋住,只能解壓縮後放上來

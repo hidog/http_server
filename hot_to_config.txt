@@ -3,6 +3,8 @@ boost_1_63_0_source    boost 1-63-0的官方檔案
 無法放原始壓縮檔,檔案太大會被github擋住,只能解壓縮後放上來
 
 boost_1_63_0  編譯好的boost. 以防萬一放一份上來
+需要將此檔案複製到C:\Boost    (原本的boost_1_63_0 rename成 Boost)
 
 openssl 編譯好的openssl. 目前最新版的檔案跟過去差很多.
+修改過CMakeList.txt Boost的設定, 不然會跳miss boost 套件的錯誤
 

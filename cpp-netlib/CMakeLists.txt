@@ -39,9 +39,7 @@ else()
 endif()
 
 set(Boost_USE_MULTI_THREADED ON)
-find_package( Boost 1.54.0
-    REQUIRED unit_test_framework system regex date_time thread filesystem
-    program_options chrono atomic )
+find_package( Boost 1.54.0 )
 find_package( OpenSSL )
 find_package( Threads )
 set(CMAKE_VERBOSE_MAKEFILE true)

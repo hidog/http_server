@@ -27,13 +27,8 @@ public:
 	void	init();
 	void	start();
 
-	char	*root_path;
-
 private:
 	const static int	THREAD_MAX	=	20;
-
-    int port;
-    std::string ip;
 };
 
 

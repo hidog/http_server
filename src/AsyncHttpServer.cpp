@@ -9,8 +9,8 @@
 
 using namespace std;
 
-
-
+extern int g_port;
+extern char g_ip[100];
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,11 +19,7 @@ using namespace std;
 	constructor
 ***********************************************************/
 AsyncHttpServer::AsyncHttpServer()
-{
-	root_path	=	NULL;
-    ip = "0.0.0.0";
-    port = 8888;
-}
+{}
 
 
 
@@ -58,7 +54,7 @@ void	AsyncHttpServer::init()
 void	AsyncHttpServer::start()
 {
 	stringstream ss;
-	ss << port;
+	ss << g_port;
 	string	str_port = ss.str();
 
 	try	{
@@ -67,10 +63,8 @@ void	AsyncHttpServer::start()
 		file_server::options options(handler);
 
 		file_server instance(
-				options.thread_pool(boost::make_shared<boost::network::utils::thread_pool>(THREAD_MAX)).address(ip).port(str_port)	
+				options.thread_pool(boost::make_shared<boost::network::utils::thread_pool>(THREAD_MAX)).address(std::string(g_ip)).port(str_port)	
 			);
-
-		root_path	=	handler.root_path;
 		instance.run();
 	} catch ( exception &e ) {
 		printf("error");

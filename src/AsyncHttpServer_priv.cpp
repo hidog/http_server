@@ -17,7 +17,8 @@
 using namespace std;
 
 
-
+extern char g_ext[100];
+extern char g_root[100];
 
 
 
@@ -37,44 +38,19 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
 	// 之前修改的時候發生crash
     void operator() (	std::string const &destination, 
 						file_server::connection_ptr connection, 
-						__int64 begin, __int64 end, char *root_path ) 
+						__int64 begin, __int64 end ) 
 	{
-		string para, cmd;
+        // 移除斜線
+        std::string filename = destination.substr( 1 );
 
-		seperate_cmd_para( destination, cmd, para );
-
-		// 目前此server只提供get_file	
-		if( cmd != "get_file" )	
-		{
-			connection->set_status(file_server::connection::bad_request);
-			connection->write("bad request");
-			return;
-		}
-
-		// decode url
-		url_decode( para );
-			
-		// parse parameter
-		map<string,string>	para_map	=	parse_parameter( para );
-		map<string,string>::iterator	file_path_itr	=	para_map.find("file_path"),
-										file_name_itr	=	para_map.find("file_name");
-		if( file_path_itr == para_map.end() || file_name_itr == para_map.end() )
-		{
-			connection->set_status(file_server::connection::bad_request);
-			connection->write("bad request");
-			return;
-		}
-
-		string	filename	=	file_name_itr->second,	
-				path		=	file_path_itr->second;
-
-		wstring	full_filename = L"1.avi"; //pre_root + qpath.toStdWString() + wstring(L"/") + qfilename.toStdWString();
+		string	full_filename = std::string(g_root) + filename + std::string(".") + std::string(g_ext);
+            //"D:\\1.avi";
 
 		// 開啟檔案
-		int		fd	=	_wopen( full_filename.c_str(), _O_BINARY | _O_RDONLY );
+		int		fd	=	_open( full_filename.c_str(), _O_BINARY | _O_RDONLY );
 		if( fd == -1 )
 		{
-			not_found(path, connection);
+			not_found(full_filename, connection);
 			return;
 		}
 
@@ -83,7 +59,7 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
 		//size_t	file_size		=	get_file_size(full_filename);
 		if( end == FILE_POS_DEFAULT )	
 			end		=	file_size;
-		send_headers( connection , begin, end, file_size, filename );
+		send_headers( connection , begin, end, file_size, "1.avi" );
 		send_file( fd, begin, end, file_size, connection );
 		 
 		//_close(fd);		// 檢查這邊close的時機是否正確
@@ -292,8 +268,7 @@ int		parse_method( string method )
 	handle_get
 ***********************************************************/
 int		handle_get( file_server::request const &request, 
-					file_server::connection_ptr connection,
-					char *root_path )
+					file_server::connection_ptr connection )
 {
 	int		i;
 
@@ -316,7 +291,7 @@ int		handle_get( file_server::request const &request,
 
 	// note: 這邊之前改掉後會發生crash  要研究shared ptr以後再修改.
 	boost::shared_ptr<connection_handler>	handler( new connection_handler() );
-	(*handler)( request.destination, connection, begin, end, root_path );
+	(*handler)( request.destination, connection, begin, end );
 
 	return	ASYNC_OK;
 }
@@ -327,8 +302,7 @@ int		handle_get( file_server::request const &request,
 	handle_request
 ***********************************************************/
 int		handle_request( file_server::request const &request, 
-						file_server::connection_ptr connection,
-						char *root_path )
+						file_server::connection_ptr connection )
 {
 	int		res	=	ASYNC_DEFAULT;
 
@@ -340,7 +314,7 @@ int		handle_request( file_server::request const &request,
 			//(*h)(request.destination, connection, false, 0, 0, root_path);
 			break;
 		case ASYNC_HTTP_GET:
-			res		=	handle_get( request, connection, root_path );
+			res		=	handle_get( request, connection );
 			break;
 		default:
 			BOOST_ASSERT(false);

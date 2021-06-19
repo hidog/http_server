@@ -1,8 +1,17 @@
 #include "tool.h"
 
 #include <boost/lexical_cast.hpp>
+#include <stdio.h>
+
 
 using namespace std;
+
+
+int g_port;
+char g_ip[100];
+char g_ext[100];
+char g_root[100];
+
 
 
 
@@ -31,4 +40,18 @@ void seperate_filename_extension( const string& source, string& filename, string
 
 	filename	=	source.substr( 0, i );
 	extension	=	source.substr( i+1, source.length() );
+}
+
+
+
+void load_config()
+{
+    FILE *fp = fopen("config.txt", "r" );
+    if( fp == NULL )
+        printf( "error !! \n" );
+
+    fscanf( fp, "%s", &g_ip );
+    fscanf( fp, "%d", &g_port );
+    fscanf( fp, "%s", &g_root );
+    fscanf( fp, "%s", &g_ext );
 }

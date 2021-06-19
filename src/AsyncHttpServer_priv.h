@@ -56,11 +56,9 @@ bool				is_file_exist( string full_filename );
 vector<string>		get_range( file_server::request const & request );
 int					parse_method( string method );
 int					handle_request( file_server::request const &request, 
-									file_server::connection_ptr connection,
-									char *root_path );
+									file_server::connection_ptr connection );
 int					handle_get( file_server::request const &request, 
-								file_server::connection_ptr connection,
-								char *root_path );
+								file_server::connection_ptr connection );
 void				url_decode( string& str );
 map<string,string>	parse_parameter( string para );
 
@@ -70,23 +68,19 @@ map<string,string>	parse_parameter( string para );
 // async_http_handler_struct
 struct	async_http_handler_struct 
 {
-	char	*root_path;		// 這邊採用共用資料的方式來存取.  (多緒偷懶做法)
-
 	// --------------------------------------------------------------------------------------------------------------------------
 	// constructor
 	explicit async_http_handler_struct() 
-	{
-		root_path	=	new char[1000];
-		strcpy( root_path, "C:\\" );		// default path.
-	}
+	{}
+
 	// destructor
-	~async_http_handler_struct() { delete root_path; root_path = NULL; }
+	~async_http_handler_struct() {}
 
 	// --------------------------------------------------------------------------------------------------------------------------
 	void operator() (	file_server::request const &request, 
 						file_server::connection_ptr connection ) 
 	{
-		int		res		=	handle_request( request, connection, root_path );
+		int		res		=	handle_request( request, connection );
 	}
 };
 

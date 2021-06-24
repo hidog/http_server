@@ -47,7 +47,8 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
             //"D:\\1.avi";
 
 		// 開啟檔案
-		int		fd	=	_open( full_filename.c_str(), _O_BINARY | _O_RDONLY );
+        printf( "open file path = %s\n", full_filename.c_str() );
+		int	fd = _open( full_filename.c_str(), _O_BINARY | _O_RDONLY );
 		if( fd == -1 )
 		{
 			not_found(full_filename, connection);
@@ -59,7 +60,7 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
 		//size_t	file_size		=	get_file_size(full_filename);
 		if( end == FILE_POS_DEFAULT )	
 			end		=	file_size;
-		send_headers( connection , begin, end, file_size, "1.avi" );
+		send_headers( connection , begin, end, file_size, filename.c_str() );
 		send_file( fd, begin, end, file_size, connection );
 		 
 		//_close(fd);		// 檢查這邊close的時機是否正確
@@ -107,7 +108,8 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
 
 		if( begin > end )
 		{
-			_close(fd);		// 檢查這邊close的時機是否正確
+			_close(fd);	 // 檢查這邊close的時機是否正確
+            printf("end\n");
 			return;
 		}
 
@@ -118,6 +120,7 @@ struct connection_handler : boost::enable_shared_from_this<connection_handler>
 		if( _read( fd, buf, buf_size ) <= 0 )
 		{
 			_close(fd);
+            printf("end\n");
 			return;
 		}
 
@@ -237,7 +240,7 @@ vector<string>	get_range( file_server::request const & request )
 		if( request.headers[i].name == "Range" )
 		{
 			//range = request.headers[i].value;
-			printf( "%s\n", request.headers[i].value.c_str() );
+			printf( "range %s\n", request.headers[i].value.c_str() );
 			range.push_back( request.headers[i].value );
 			break;
 		}

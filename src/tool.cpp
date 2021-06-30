@@ -54,4 +54,6 @@ void load_config()
     fscanf( fp, "%d", &g_port );
     fscanf( fp, "%s", &g_root );
     fscanf( fp, "%s", &g_ext );
+
+    printf("ip = %s\nport = %d\npath = %s\next = %s\n", g_ip, g_port, g_root, g_ext );
 }
